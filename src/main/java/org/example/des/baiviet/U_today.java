@@ -1,23 +1,14 @@
-package org.example.des;
+package org.example.des.baiviet;
 
-//Cần import những thư viện này của Jsoup
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+//Cần import những thư viện này của Joup
 import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-//Cần import những thư viện này của gson
-import com.google.gson.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.FileReader;
-import com.google.gson.Gson;
 
-public class Forbes extends BaiViet {
-    public Forbes(String url) {
+public class U_today extends BaiViet {
+    public U_today(String url) {
         try {
             Document doc = Jsoup.connect(url).get();
 
@@ -25,23 +16,22 @@ public class Forbes extends BaiViet {
             this.setLink(url);
 
             //Nguồn bài viết
-            this.setNguon("https://www.forbes.com");
+            this.setNguon("https://u.today");
 
             //Tiêu đề
             String td= doc.select("h1").text();
             this.setTieuDe(td);
 
             //Chuyên mục
-            String cmuc = doc.select("a.y-rKzEDT").text();
+            String cmuc = doc.select("li.breadcrumbs__item").get(2).text();
             this.setChuyenMuc(cmuc);
 
             //Tác giả
-            String tg = doc.select("a.contrib-link--name.remove-underline.author-name--tracking.not-premium-contrib-link--name").text();
+            String tg = doc.select("div.article__author-name").get(0).text();
             this.setTacGia(tg);
 
             //Thời gian
-            Element timeElement = doc.select("time").first();
-            String tGian = timeElement.text();
+            String tGian = doc.select("div.humble.article__short-humble").get(1).text();
             this.setThoigian(tGian);
 
             //Tags
@@ -49,13 +39,14 @@ public class Forbes extends BaiViet {
 
 
             //Nội dung bài viết
-            String noidung = "";
+            String noidung = doc.select("div.article__author-desc").getFirst().text() + " ";
             Elements noidungbv = doc.select("p");
-            for (Element nd : noidungbv) {
-                String ndText = nd.text();
+            for (int e = 0; e < noidungbv.size()-2; e++) {
+                String ndText = noidungbv.get(e).text();
                 noidung = noidung + ndText + " ";
             }
             this.setNoidung(noidung);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

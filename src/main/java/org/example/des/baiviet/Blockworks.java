@@ -1,20 +1,11 @@
-package org.example.des;
+package org.example.des.baiviet;
 
 //Cần import những thư viện này của Joup
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-//Cần import những thư viện này của gson
-import com.google.gson.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.FileReader;
-import com.google.gson.Gson;
 
 public class Blockworks extends BaiViet {
     public Blockworks(String url) {

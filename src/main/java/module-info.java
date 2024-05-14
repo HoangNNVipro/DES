@@ -10,4 +10,6 @@ module org.example.des {
 
     opens org.example.des to javafx.fxml;
     exports org.example.des;
+    exports org.example.des.baiviet;
+    opens org.example.des.baiviet to javafx.fxml;
 }

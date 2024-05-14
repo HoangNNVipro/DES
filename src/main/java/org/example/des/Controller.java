@@ -1,5 +1,6 @@
 package org.example.des;
 
+import org.example.des.baiviet.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -60,7 +61,106 @@ public class Controller implements Initializable {
     @FXML
     private Button tuvan_btn;
 
-    //Trích xuất
+
+
+/* Cài đặt chức năng cho các Button để chuyển qua lại giữa các giao diện */
+
+    public void switchForm(ActionEvent event) {
+        if (event.getSource() == trangchu_btn) {
+            trangchu.setVisible(true);
+            truyxuat.setVisible(false);
+            timkiem.setVisible(false);
+            tuvan.setVisible(false);
+            macdinh.setVisible(false);
+            tukhoa.setVisible(false);
+        } else if (event.getSource() == truyxuat_btn) {
+            trangchu.setVisible(false);
+            truyxuat.setVisible(true);
+            timkiem.setVisible(false);
+            tuvan.setVisible(false);
+            macdinh.setVisible(false);
+            tukhoa.setVisible(false);
+        } else if (event.getSource() == timkiem_btn) {
+            trangchu.setVisible(false);
+            truyxuat.setVisible(false);
+            timkiem.setVisible(true);
+            tuvan.setVisible(false);
+            macdinh.setVisible(false);
+            tukhoa.setVisible(false);
+        } else if (event.getSource() == tuvan_btn) {
+            trangchu.setVisible(false);
+            truyxuat.setVisible(false);
+            timkiem.setVisible(false);
+            tuvan.setVisible(true);
+            macdinh.setVisible(false);
+            tukhoa.setVisible(false);
+        } else if (event.getSource() == macdinh_btn) {
+            trangchu.setVisible(false);
+            truyxuat.setVisible(false);
+            timkiem.setVisible(false);
+            tuvan.setVisible(false);
+            macdinh.setVisible(true);
+            tukhoa.setVisible(false);
+        } else if (event.getSource() == tukhoa_btn) {
+            trangchu.setVisible(false);
+            truyxuat.setVisible(false);
+            timkiem.setVisible(false);
+            tuvan.setVisible(false);
+            macdinh.setVisible(false);
+            tukhoa.setVisible(true);
+        }
+    }
+
+/* Cài đặt chức năng cho các Button để chuyển qua lại giữa các giao diện */
+
+
+
+/* Set up ban đầu */
+
+    // Phương thức set các nguồn đã có và truyền vào comboBox ở phần Trích xuất và Tìm kiếm mặc định
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        //setup chonnguon_tx_cbb
+        ArrayList<String> danhSach = new ArrayList<String>();
+        danhSach.add("https://blockchain.news");
+        danhSach.add("https://www.forbes.com");
+        danhSach.add("https://www.coindesk.com");
+        danhSach.add("https://www.the-blockchain.com");
+        danhSach.add("https://decrypt.co");
+        danhSach.add("https://u.today");
+        danhSach.add("https://blockworks.co");
+        danhSach.add("https://www.bsc.news");
+        danhSach.add("https://ripplecoinnews.com");
+
+        ObservableList<String> list = FXCollections.observableArrayList(danhSach);
+        chonnguon_tx_cbb.setItems(list);
+        chonnguon_tk_cbb.setItems(list);
+
+        set_dataArray_tk();
+    }
+
+    private JsonArray dataArray_tk4 = new JsonArray();
+    private JsonArray dataArray_tk3 = new JsonArray();
+    private JsonArray dataArray_tk2 = new JsonArray();
+    private JsonArray dataArray_tk1 = new JsonArray();
+    private JsonArray dataArray_tk = new JsonArray();
+
+    public void set_dataArray_tk() {
+        try {
+            FileReader fileReader_tk = new FileReader("Stored_File.json");
+            JsonParser jsonParser_tk = new JsonParser();
+            dataArray_tk = (JsonArray) jsonParser_tk.parse(fileReader_tk);
+        } catch (Exception e) {
+
+        }
+    }
+
+/* Set up ban đầu */
+
+
+
+/* Controller cho giao diện Trích xuất */
+
     @FXML
     private ComboBox chonnguon_tx_cbb;
 
@@ -76,6 +176,8 @@ public class Controller implements Initializable {
     @FXML
     private Button tieptheo_tx_btn;
 
+    // Phương thức để kiểm tra xem đường link đã có trong file Stored_File.json hay chưa.
+    // Nếu đã có thì trả về 1. Nếu chưa thì trả về 0
     public int check(String url) {
         try {
             FileReader fileReader = new FileReader("Stored_File.json");
@@ -104,6 +206,7 @@ public class Controller implements Initializable {
         return 0;
     }
 
+    // Phương thức để mở trang web khi nhấn vào Button mở trang
     @FXML
     public void motrang_tx(ActionEvent event) {
         String nguon_tx = (String) chonnguon_tx_cbb.getValue();
@@ -127,16 +230,27 @@ public class Controller implements Initializable {
         }
     }
 
+    // Phương thức khi nhấn Button trích xuất
     @FXML
     public void capNhat(ActionEvent event) {
 
+        // Kiểm tra qua các câu lệnh if - else để xác định đường link thuộc loại bài viết nào
+
         String url = Link.getText();
         if (url.indexOf("https://blockchain.news/news") >= 0) {
+
+            // Dùng hàm check kiểm tra xem bài viết đã có trong file Stored_File.json
+            // Nếu đã có thì chỉ thông báo "Bài viết đã có trong cơ sở dữ liệu từ trước."
             if ((check(url)) == 1) label_tx.setText("Bài viết đã có trong cơ sở dữ liệu từ trước.");
+
+            // Nếu chưa có thì khởi tạo đối tượng thuộc loại bài viết đó
+            // Dùng phương thức saveToStoredFile() để lưu thông tin bài viết vào file Stored_File.json
+            // Thông báo "Cập nhật thông tin bài viết thành công !"
             else {
                 new Blockchain(url).saveToStoredFile();
                 label_tx.setText("Cập nhật thông tin bài viết thành công !");
             }
+
         } else if (url.indexOf("https://www.forbes.com/sites/digital-assets") >= 0) {
             if ((check(url)) == 1) label_tx.setText("Bài viết đã có trong cơ sở dữ liệu từ trước.");
             else {
@@ -190,6 +304,7 @@ public class Controller implements Initializable {
         }
     }
 
+    // Phương thức xóa các nội dung hiện tại khi nhấn Button Xóa
     @FXML
     public void tieptheo_tx(ActionEvent event) {
         chonnguon_tx_cbb.setValue(null);
@@ -197,13 +312,17 @@ public class Controller implements Initializable {
         label_tx.setText("");
     }
 
-//Trích xuất
+/* Controller cho giao diện Trích xuất */
 
-//Tìm kiếm mặc định
+
+
+/* Controller cho giao diện Tìm kiếm mặc định */
 
     @FXML
     private ComboBox chonnguon_tk_cbb;
 
+    // Phương thức để chọn ra các chuyên mục tương ứng với nguồn đã chọn có trong file Stored_File.json
+    // và đưa vào comboBox
     @FXML
     public void chonnguon_tk(ActionEvent event) {
         try {
@@ -236,6 +355,8 @@ public class Controller implements Initializable {
     @FXML
     private ComboBox chuyenmuc_tk_cbb;
 
+    // Phương thức để chọn ra các tác giả tương ứng với chuyên mục đã chọn
+    // và đưa vào comboBox
     @FXML
     public void chuyenmuc_tk(ActionEvent event) {
         try {
@@ -268,6 +389,8 @@ public class Controller implements Initializable {
     @FXML
     private ComboBox tacgia_tk_cbb;
 
+    // Phương thức để chọn ra các tiêu đề tương ứng với tác giả đã chọn
+    // và đưa vào comboBox
     @FXML
     public void tacgia_tk(ActionEvent event) {
         try {
@@ -303,6 +426,7 @@ public class Controller implements Initializable {
     @FXML
     private TextArea ta_tk;
 
+    // Phương thức để in ra nội dung bài viết tương ứng với tiêu đề đã chọn
     @FXML
     public void baiviet_tk(ActionEvent event) {
         try {
@@ -333,6 +457,7 @@ public class Controller implements Initializable {
     @FXML
     private Button tieptuc_tk_btn;
 
+    // Phương thức để xóa các nội dung trên giao diện khi nhấn Button Xóa
     @FXML
     public void tieptuc_tk(ActionEvent event) {
         chonnguon_tk_cbb.setValue(null);
@@ -342,9 +467,11 @@ public class Controller implements Initializable {
         ta_tk.clear();
     }
 
-//Tìm kiếm mặc định
+/* Controller cho giao diện Tìm kiếm mặc định */
 
-//Tìm kiếm từ khóa
+
+
+/* Controller cho giao diện Tìm kiếm từ khóa */
 
     @FXML
     private TextField tukhoa_tktk_tf;
@@ -355,6 +482,9 @@ public class Controller implements Initializable {
     @FXML
     private Label thongbao_tktk_lb;
 
+    // Phương thức để tìm kiếm từ khóa dựa trên tất cả thông tin của các bài viết
+    // Nếu tìm thấy thì đưa các tiêu đề vào comboBox và thông báo "Đã tìm được bài viết có từ khóa này."
+    // Nếu không tìm thấy thì thông báo "Không tìm được bài viết nào có từ khóa này."
     @FXML
     public void timkiem_tktk(ActionEvent event) {
         try {
@@ -393,6 +523,7 @@ public class Controller implements Initializable {
     @FXML
     private Button tieptuc_tktk_btn;
 
+    // Phương thức xóa đi các nội dung trên giao diện khi nhấn Button Xóa
     @FXML
     public void tieptuc_tktk(ActionEvent event){
         tukhoa_tktk_tf.clear();
@@ -408,6 +539,7 @@ public class Controller implements Initializable {
     @FXML
     private TextArea ta_tktk;
 
+    // Phương thức để in ra nội dung vài viết tương ứng với tiêu đề đã chọn
     @FXML
     public void baiviet_tktk(ActionEvent event){
         try{
@@ -435,90 +567,7 @@ public class Controller implements Initializable {
         }
     }
 
-//Tìm kiếm từ khóa
+/* Controller cho giao diện Tìm kiếm từ khóa */
 
-    //Set up ban đầu
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        //setup chonnguon_tx_cbb
-        ArrayList<String> danhSach = new ArrayList<String>();
-        danhSach.add("https://blockchain.news");
-        danhSach.add("https://www.forbes.com");
-        danhSach.add("https://www.coindesk.com");
-        danhSach.add("https://www.the-blockchain.com");
-        danhSach.add("https://decrypt.co");
-        danhSach.add("https://u.today");
-        danhSach.add("https://blockworks.co");
-        danhSach.add("https://www.bsc.news");
-        danhSach.add("https://ripplecoinnews.com");
 
-        ObservableList<String> list = FXCollections.observableArrayList(danhSach);
-        chonnguon_tx_cbb.setItems(list);
-        chonnguon_tk_cbb.setItems(list);
-
-        set_dataArray_tk();
-    }
-
-    private JsonArray dataArray_tk4 = new JsonArray();
-    private JsonArray dataArray_tk3 = new JsonArray();
-    private JsonArray dataArray_tk2 = new JsonArray();
-    private JsonArray dataArray_tk1 = new JsonArray();
-    private JsonArray dataArray_tk = new JsonArray();
-
-    public void set_dataArray_tk() {
-        try {
-            FileReader fileReader_tk = new FileReader("Stored_File.json");
-            JsonParser jsonParser_tk = new JsonParser();
-            dataArray_tk = (JsonArray) jsonParser_tk.parse(fileReader_tk);
-        } catch (Exception e) {
-
-        }
-    }
-//Set up ban đầu
-
-    public void switchForm(ActionEvent event) {
-        if (event.getSource() == trangchu_btn) {
-            trangchu.setVisible(true);
-            truyxuat.setVisible(false);
-            timkiem.setVisible(false);
-            tuvan.setVisible(false);
-            macdinh.setVisible(false);
-            tukhoa.setVisible(false);
-        } else if (event.getSource() == truyxuat_btn) {
-            trangchu.setVisible(false);
-            truyxuat.setVisible(true);
-            timkiem.setVisible(false);
-            tuvan.setVisible(false);
-            macdinh.setVisible(false);
-            tukhoa.setVisible(false);
-        } else if (event.getSource() == timkiem_btn) {
-            trangchu.setVisible(false);
-            truyxuat.setVisible(false);
-            timkiem.setVisible(true);
-            tuvan.setVisible(false);
-            macdinh.setVisible(false);
-            tukhoa.setVisible(false);
-        } else if (event.getSource() == tuvan_btn) {
-            trangchu.setVisible(false);
-            truyxuat.setVisible(false);
-            timkiem.setVisible(false);
-            tuvan.setVisible(true);
-            macdinh.setVisible(false);
-            tukhoa.setVisible(false);
-        } else if (event.getSource() == macdinh_btn) {
-            trangchu.setVisible(false);
-            truyxuat.setVisible(false);
-            timkiem.setVisible(false);
-            tuvan.setVisible(false);
-            macdinh.setVisible(true);
-            tukhoa.setVisible(false);
-        } else if (event.getSource() == tukhoa_btn) {
-            trangchu.setVisible(false);
-            truyxuat.setVisible(false);
-            timkiem.setVisible(false);
-            tuvan.setVisible(false);
-            macdinh.setVisible(false);
-            tukhoa.setVisible(true);
-        }
-    }
 }

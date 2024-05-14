@@ -1,23 +1,14 @@
-package org.example.des;
+package org.example.des.baiviet;
 
 //Cần import những thư viện này của Joup
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-//Cần import những thư viện này của gson
-import com.google.gson.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.FileReader;
-import com.google.gson.Gson;
 
-public class Decrypt extends BaiViet {
-    public Decrypt(String url) {
+public class Bsc_news extends BaiViet {
+    public Bsc_news(String url) {
         try {
             Document doc = Jsoup.connect(url).get();
 
@@ -25,30 +16,23 @@ public class Decrypt extends BaiViet {
             this.setLink(url);
 
             //Nguồn bài viết
-            this.setNguon("https://decrypt.co");
+            this.setNguon("https://www.bsc.news");
 
             //Tiêu đề
             String td= doc.select("h1").text();
             this.setTieuDe(td);
 
             //Chuyên mục
-            int i = 0; String cmuc = "";
-            Elements chuyenmuc = doc.select("span");
-            for (Element cmText : chuyenmuc) {
-                //noidung = noidung + ndText + " ";
-                if(i==257){
-                    cmuc  = cmText.text(); break;
-                }
-                ++i;
-            }
+            String cmuc = doc.select("p.text-white.py-2.px-2.text-sm.font-medium.bg-violet-500.rounded-tl-xl.rounded-tr-lg.rounded-bl-lg.rounded-br-xl.w-fit").text()
+                    + doc.select("p.text-white.py-2.px-2.text-sm.font-medium.bg-background-news-card-hightlighted.rounded-tl-xl.rounded-tr-lg.rounded-bl-lg.rounded-br-xl.w-fit").text();
             this.setChuyenMuc(cmuc);
 
             //Tác giả
-            String tg = doc.select("span.underline").getFirst().text();
+            String tg = doc.select("p.text-sm.font-normal.ml-2").get(0).text();
             this.setTacGia(tg);
 
             //Thời gian
-            String tGian = doc.select("time").getLast().text();
+            String tGian = doc.select("p.text-sm.font-normal.ml-2").get(1).text();
             this.setThoigian(tGian);
 
             //Tags
@@ -56,9 +40,9 @@ public class Decrypt extends BaiViet {
 
 
             //Nội dung bài viết
-            String noidung = doc.select("h2").get(1).text() + " ";
+            String noidung = "";
             Elements noidungbv = doc.select("p");
-            for (int e = 249; e < noidungbv.size()-3; e++) {
+            for (int e = 32; e < noidungbv.size()-102; e++) {
                 String ndText = noidungbv.get(e).text();
                 noidung = noidung + ndText + " ";
             }

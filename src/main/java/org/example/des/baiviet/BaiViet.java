@@ -1,22 +1,17 @@
-package org.example.des;
+package org.example.des.baiviet;
 
 //Cần import những thư viện này của Joup
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 //Cần import những thư viện này của gson
 import com.google.gson.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.FileReader;
-import com.google.gson.Gson;
 
+// BaiViet là class cha
 public class BaiViet {
+
+    // Các thuốc tính của 1 bài viết
     private String link;
     private String nguon;
     private String tieuDe;
@@ -26,6 +21,8 @@ public class BaiViet {
     private String tags;
     private String noidung;
 
+
+    // Cài đặt các phương thức getter and setter cho các thuộc tính
     public String getLink() {
         return link;
     }
@@ -90,6 +87,8 @@ public class BaiViet {
         this.chuyenMuc = chuyenMuc;
     }
 
+
+    // Phương thức để lưu tất cả thông tin của bài viết vào file Stored_File.json và Stored_File.csv
     public void saveToStoredFile (){
         try {
             //Ghi thông tin đối tượng vào Stored_File.json

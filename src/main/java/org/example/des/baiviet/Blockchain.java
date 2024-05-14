@@ -1,22 +1,21 @@
-package org.example.des;
+package org.example.des.baiviet;
 
 //Cần import những thư viện này của Joup
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-//Cần import những thư viện này của gson
-import com.google.gson.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.FileReader;
-import com.google.gson.Gson;
 
+//Tất cả các class con kế thừa class BaiViet đều có cấu trúc và cách hoạt động như sau:
+
+
+// Blockchain kế thừa các thuộc tính và phương thức của BaiViet
 public class Blockchain extends BaiViet {
+
+    // Phương thức khởi tạo nhận vào 1 link url, thực hiện lấy hết thông tin từ bài viết ở đường link đó
+    // và set cho các thuộc tính
     public Blockchain(String url) {
         try {
             Document doc = Jsoup.connect(url).get();
